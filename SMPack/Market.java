@@ -6,7 +6,7 @@ public class Market {
     Map<String, User> users; //Email -> User(ab obj)
     private int nextBillNo = 1001;
 
-    public void Market(){
+    public Market(){
         items = new HashMap<>();
         users = new HashMap<>();
     }
@@ -32,10 +32,14 @@ public class Market {
     }
 
     public void addItem(Item item){
+        if(items.containsKey(item.getID())){
+            System.out.println("Product ID Already Exists");
+            return;
+        }
         items.put(item.getID(), item);
     }
 
-    public void deleteBook(String id){
+    public void deleteItem(String id){
         Item item = getItemById(id);
         if(item != null){
             items.remove(id);
@@ -59,5 +63,13 @@ public class Market {
 
     public int getNextBillNo(){
         return nextBillNo++;
+    }
+
+    public User authenticateUser(String email, String password) {
+        User user = users.get(email);
+        if (user != null && user.authenticate(email, password)) {
+            return user;
+        }
+        return null;
     }
 }

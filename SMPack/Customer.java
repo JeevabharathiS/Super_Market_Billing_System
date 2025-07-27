@@ -7,14 +7,18 @@ public class Customer extends User{
     private int loyaltyScore;
     private List<Bill> purchaseHistory;
     private Map<String, CartItem> cart; //ID -> cartItem(obj)
+    private Admin byAdmin;
+    private double totalSpent;
 
-    public Customer(String email, String password, Market market){
+    public Customer(String email, String password, Admin byAdmin ,Market market){
         super(email, password, "Customer");
         this.market = market;
         this.credit = 1000.0;
         this.loyaltyScore = 0;
         this.purchaseHistory = new ArrayList<>();
         this.cart = new HashMap<>();
+        this.byAdmin = byAdmin;
+        this.totalSpent = 0.0;
     }
 
     Scanner sc = new Scanner(System.in);
@@ -77,6 +81,10 @@ public class Customer extends User{
                     System.out.println("Logging Out..\n");
                     return;
 
+                case 0:
+                    System.out.println();
+                    System.out.println("Logging Out...");
+                    return;
 
                 default:
                     System.out.println();
@@ -242,7 +250,10 @@ public class Customer extends User{
         int billNo = market.getNextBillNo();
         Bill bill = new Bill(billNo, new Date(), this.getEmail(), new ArrayList<>(cart.values()), total, credit, loyaltyScore, discount);
         purchaseHistory.add(bill);
+        bill.printBill();
         clearCart();
+        byAdmin.incrementSalesMade();
+        totalSpent += finalAmount;
     }
 
     public void viewPurchaseHistory(){
@@ -256,5 +267,13 @@ public class Customer extends User{
         }
     }
 
-    
+    public void addCredit(double amt){
+        credit += amt;
+    }
+
+    public double getTotalSpent(){
+        return this.totalSpent;
+    }
+
+
 }
